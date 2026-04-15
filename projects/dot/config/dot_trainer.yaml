@@ -1,0 +1,28 @@
+hydra:
+  searchpath:
+    - file://verl/trainer/config
+
+# Project-local config extension for DOT:
+# - `algorithm.filter_groups`: Predictive Dynamic Sampling (PDS)
+# - `algorithm.length_truncation`: Dynamic Outlier Truncation (DOT)
+
+defaults:
+  - ppo_trainer
+  - _self_
+
+algorithm:
+  _target_: projects.dot.config.algorithm.DotAlgoConfig
+
+  filter_groups:
+    enable: True
+    metric: seq_final_reward
+    history_window: 20
+    initial_oversample_factor: 1.5
+    min_oversample_factor: 1.2
+    max_oversample_factor: 5.0
+  
+  length_truncation:
+    enable: True
+    success_threshold: 1.0
+    std_multiplier: 3.0
+    min_truncation_margin: 32
